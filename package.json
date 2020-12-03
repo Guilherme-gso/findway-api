@@ -37,7 +37,6 @@
   },
   "scripts": {
     "dev": "tsnd -r tsconfig-paths/register --inspect --transpile-only --ignore-watch ./node_modules src/shared/infra/http/server.ts",
-    "test": "jest",
     "build": "tsc",
     "start": "tsnd -r tsconfig-paths/register ./dist/server.js",
     "typeorm": "tsnd -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
