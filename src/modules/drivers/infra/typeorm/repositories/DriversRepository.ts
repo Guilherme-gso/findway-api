@@ -18,6 +18,29 @@ export class DriversRepository implements IDriversRepository {
     return driver;
   }
 
+  public async findDriverId(user_id: string): Promise<Driver | undefined> {
+    const driver = await this.driversRepository.findOne({
+      where: {
+        user_id,
+      },
+    });
+
+    return driver;
+  }
+
+  public async findDriverJobs(user_id: string): Promise<Driver | undefined> {
+    const driver = await this.driversRepository.findOne({
+      where: { user_id },
+      relations: ['jobs'],
+    });
+
+    if (!driver) {
+      throw new Error('Driver not found');
+    }
+
+    return driver;
+  }
+
   public async findDriverWithTheSameUserId({
     user_id,
   }: IDriverRequest): Promise<Driver | undefined> {

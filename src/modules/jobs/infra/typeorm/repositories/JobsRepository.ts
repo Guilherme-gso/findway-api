@@ -19,38 +19,70 @@ export class JobsRepository implements IJobsRepository {
     return job;
   }
 
+  public async save(data: Job): Promise<Job> {
+    const job = await this.jobsRepository.save(data);
+
+    return job;
+  }
+
+  public async delete(data: Job): Promise<void> {
+    await this.jobsRepository
+      .createQueryBuilder('jobs')
+      .where('jobs.id = :id', { id: data.id })
+      .delete()
+      .execute();
+  }
+
   public async findAllJobs(): Promise<Job[]> {
-    const jobs = await this.jobsRepository.find();
+    const jobs = await this.jobsRepository.find({
+      order: {
+        title: 1,
+      },
+    });
+
+    return jobs;
+  }
+
+  public async findDriverJobs(driver_id: string): Promise<Job[]> {
+    const jobs = await this.jobsRepository.find({
+      where: {
+        driver_id,
+      },
+    });
 
     return jobs;
   }
 
   public async findById(id: string): Promise<Job | undefined> {
-    const job = await this.jobsRepository.findOne({ where: { id } });
+    const job = await this.jobsRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['driver'],
+    });
 
     return job;
   }
 
-  public async findByTitle(title: string): Promise<Job | undefined> {
+  public async findByTitle(title: string): Promise<Job[]> {
     const job = await this.jobsRepository
-      .createQueryBuilder()
-      .where('LOWER(title) = LOWER(:title)', { title })
-      .getOne();
+      .createQueryBuilder('jobs')
+      .where('LOWER(jobs.title) LIKE :title', {
+        title: `${title.toLowerCase()}%`,
+      })
+      .getMany();
 
     return job;
   }
 
-  public async findByCategories(categories: string[] | string): Promise<Job[]> {
+  public async findByCategories(categories: string[]): Promise<Job[]> {
     const jobs = await this.jobsRepository.find();
-    const availableJobs: Job[] = [];
-
-    if (typeof categories === 'string')
-      return jobs.filter(job => job.categories.includes(categories));
+    let availableJobs: Job[] = [];
 
     categories.forEach(category => {
-      const job = jobs.find(findJob => findJob.categories.includes(category));
+      const job = jobs.filter(findJob => findJob.categories.includes(category));
 
-      if (job) availableJobs.push(job);
+      availableJobs = job;
     });
 
     return availableJobs;
@@ -100,7 +132,7 @@ export class JobsRepository implements IJobsRepository {
     min_vacancies,
     max_vacancies,
   }: IFilterJob): Promise<Job[]> {
-    if (categories && min_vacancies && max_vacancies) {
+    if (categories.length && min_vacancies && max_vacancies) {
       const jobsByCategories = await this.findByCategories(categories);
 
       return jobsByCategories.filter(
@@ -108,12 +140,12 @@ export class JobsRepository implements IJobsRepository {
       );
     }
 
-    if (categories) {
+    if (categories && !max_vacancies && !min_vacancies) {
       const jobs = await this.findByCategories(categories);
       return jobs;
     }
 
-    if (min_vacancies && max_vacancies) {
+    if (min_vacancies && max_vacancies && !categories.length) {
       const jobs = await this.findByVacancies(min_vacancies, max_vacancies);
       return jobs;
     }

@@ -10,6 +10,7 @@ const profileController = new ProfileController();
 
 usersRouter.post('/', usersController.create);
 usersRouter.patch('/:user_id/avatar', usersController.update);
+usersRouter.get('/:user_id', usersController.show);
 usersRouter.put('/:user_id/profile', profileController.update);
 usersRouter.post('/sessions', authenticateUserController.handle);
 

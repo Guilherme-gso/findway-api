@@ -6,6 +6,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.4.1",
@@ -37,6 +38,8 @@
   "scripts": {
     "dev": "tsnd -r tsconfig-paths/register --inspect --transpile-only --ignore-watch ./node_modules src/shared/infra/http/server.ts",
     "test": "jest",
+    "build": "tsc",
+    "start": "tsnd -r tsconfig-paths/register ./dist/server.js",
     "typeorm": "tsnd -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   }
 }

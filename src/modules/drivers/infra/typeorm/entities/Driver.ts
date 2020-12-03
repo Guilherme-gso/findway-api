@@ -16,13 +16,13 @@ export class Driver {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToMany(() => Job, job => job.driver, { eager: true })
+  @OneToMany(() => Job, job => job.driver)
   jobs: Job[];
 
   @Column()
   user_id: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

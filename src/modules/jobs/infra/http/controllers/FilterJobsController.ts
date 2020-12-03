@@ -4,7 +4,7 @@ import { JobsRepository } from '../../typeorm/repositories/JobsRepository';
 
 export class FilterJobsController {
   public async index(request: Request, response: Response): Promise<Response> {
-    const { min_vacancies, max_vacancies, categories } = request.query;
+    const { categories, min_vacancies, max_vacancies } = request.body;
 
     const jobsRepository = new JobsRepository();
 
@@ -13,8 +13,8 @@ export class FilterJobsController {
     try {
       const jobs = await filterJobs.execute({
         categories: categories as string[],
-        min_vacancies: min_vacancies ? Number(min_vacancies) : 0,
-        max_vacancies: max_vacancies ? Number(max_vacancies) : 0,
+        min_vacancies: Number(min_vacancies),
+        max_vacancies: Number(max_vacancies),
       });
 
       return response.json(jobs);

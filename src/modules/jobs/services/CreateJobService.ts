@@ -18,7 +18,7 @@ export class CreateJobService {
 
     const jobAlreadyExists = await this.jobsRepository.findByTitle(data.title);
 
-    if (jobAlreadyExists) {
+    if (jobAlreadyExists.length) {
       throw new Error('This job is already created.');
     }
 

@@ -47,4 +47,20 @@ export class UsersController {
 
     return response.json(user);
   }
+
+  public async show(request: Request, response: Response): Promise<Response> {
+    const { user_id } = request.params;
+
+    const usersRepository = new UsersRepository();
+
+    const user = await usersRepository.findById(user_id);
+
+    if (!user) {
+      return response.status(400).json({ error: 'User not found' });
+    }
+
+    delete user.password;
+
+    return response.json(user);
+  }
 }

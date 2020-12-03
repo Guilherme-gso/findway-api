@@ -11,7 +11,9 @@ export interface IDriverExceptRequest {
 
 export interface IDriversRepository {
   create(data: ICreateDriverDTO): Promise<Driver>;
+  findDriverId(user_id: string): Promise<Driver | undefined>;
   findById(id: string): Promise<Driver | undefined>;
+  findDriverJobs(user_id: string): Promise<Driver | undefined>;
   findDriverWithTheSameUserId({
     user_id,
   }: IDriverRequest): Promise<Driver | undefined>;

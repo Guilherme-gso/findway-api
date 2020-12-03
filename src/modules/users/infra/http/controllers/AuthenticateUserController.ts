@@ -1,3 +1,4 @@
+import { DriversRepository } from '@modules/drivers/infra/typeorm/repositories/DriversRepository';
 import { BcryptHashProvider } from '@modules/users/providers/HashProvider/implementations/BcryptHashProvider';
 import { TokenProvider } from '@modules/users/providers/HashProvider/implementations/TokenProvider';
 import { AuthenticateUserService } from '@modules/users/services/AuthenticateUserService';
@@ -9,6 +10,7 @@ export class AuthenticateUserController {
     const usersRepository = new UsersRepository();
     const hashProvider = new BcryptHashProvider();
     const tokenProvider = new TokenProvider();
+    const driversRepository = new DriversRepository();
 
     const { email, password } = request.body;
 
@@ -16,15 +18,20 @@ export class AuthenticateUserController {
       const authenticateUser = new AuthenticateUserService(
         usersRepository,
         hashProvider,
-        tokenProvider
+        tokenProvider,
+        driversRepository
       );
 
-      const { token, user } = await authenticateUser.execute(email, password);
+      const { token, user, driver_id } = await authenticateUser.execute(
+        email,
+        password
+      );
 
       delete user.password;
 
       return response.json({
         token,
+        driver_id,
         user,
       });
     } catch (error) {
