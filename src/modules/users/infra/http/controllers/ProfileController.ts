@@ -24,8 +24,9 @@ export class ProfileController {
       old_password,
     });
 
-    delete user.password;
-
-    return response.json(user);
+    return response.json({
+      ...user,
+      password: null,
+    });
   }
 }

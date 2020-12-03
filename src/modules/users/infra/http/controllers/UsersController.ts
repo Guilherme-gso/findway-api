@@ -20,11 +20,19 @@ export class UsersController {
         tokenProvider
       );
 
-      const user = await createUser.execute({ name, email, password });
+      const { token, user } = await createUser.execute({
+        name,
+        email,
+        password,
+      });
 
-      delete user.password;
-
-      return response.json(user);
+      return response.json({
+        token,
+        user: {
+          ...user,
+          password: null,
+        },
+      });
     } catch (error) {
       return response.status(400).json({ error: error.message });
     }
@@ -43,9 +51,10 @@ export class UsersController {
       avatar_url,
     });
 
-    delete user.password;
-
-    return response.json(user);
+    return response.json({
+      ...user,
+      password: null,
+    });
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
@@ -59,8 +68,9 @@ export class UsersController {
       return response.status(400).json({ error: 'User not found' });
     }
 
-    delete user.password;
-
-    return response.json(user);
+    return response.json({
+      ...user,
+      password: null,
+    });
   }
 }

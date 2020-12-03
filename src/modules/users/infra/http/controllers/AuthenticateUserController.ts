@@ -27,12 +27,13 @@ export class AuthenticateUserController {
         password
       );
 
-      delete user.password;
-
       return response.json({
         token,
         driver_id,
-        user,
+        user: {
+          ...user,
+          password: null,
+        },
       });
     } catch (error) {
       return response.status(400).json({ error: error.message });
